@@ -43,6 +43,33 @@ describe('getGameScore', () => {
     expect(scoreCall).to.equal('Game, player1', 'Implement player win logic after 40-0');
     expect(winningPlayer).to.equal('player1', 'Implement player win logic after 40-0');
   });
+
+  it('Game, player2 (after 40-0)', () => {
+    const gamePoints = { player1: 0, player2: 4 };
+
+    const { scoreCall, winningPlayer } = getGameScore(gamePoints);
+
+    expect(scoreCall).to.equal('Game, player2', 'Implement player win logic after 40-0');
+    expect(winningPlayer).to.equal('player2', 'Implement player win logic after 40-0');
+  });
+
+  it('Advantage, player1', () => {
+    const gamePoints = { player1: 4, player2: 3 };
+
+    const { scoreCall, winningPlayer } = getGameScore(gamePoints);
+
+    expect(scoreCall).to.equal('Advantage, player1', 'Implement player advantage logic');
+    expect(winningPlayer).to.equal(null, 'Implement player advantage logic');
+  });
+
+  it('Game, player1 (after deuce)', () => {
+    const gamePoints = { player1: 5, player2: 3 };
+
+    const { scoreCall, winningPlayer } = getGameScore(gamePoints);
+
+    expect(scoreCall).to.equal('Game, player1', 'Implement player win logic after deuce');
+    expect(winningPlayer).to.equal('player1', 'Implement player win logic after deuce');
+  });
 });
 
 describe('setScore', () => {
@@ -126,5 +153,26 @@ describe('<Scoreboard />', () => {
     wrapper.find('button.player1-scores').simulate('click');
 
     expect(wrapper.find('h2#score').text()).to.equal('Score: 15-love', 'Implement game scoring UI interaction');
+  });
+
+  it('Disables buttons after game is won', () => {
+    const wrapper = shallow(<Scoreboard />);
+
+    const player1Score = wrapper.find('button.player1-scores');
+    player1Score.simulate('click');
+    player1Score.simulate('click');
+    player1Score.simulate('click');
+    player1Score.simulate('click');
+
+    expect(player1Score.is('[disabled]')).to.equal(true, 'Implement disable buttons after win');
+  });
+
+  it('Resets game', () => {
+    const wrapper = shallow(<Scoreboard />);
+
+    wrapper.find('button.player1-scores').simulate('click');
+    wrapper.find('button.reset').simulate('click');
+
+    expect(wrapper.find('h2#score').text()).to.equal('Score: love-all', 'Implement reset button');
   });
 });
